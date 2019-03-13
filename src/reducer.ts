@@ -4,6 +4,7 @@ import { AppState } from "./types";
 
 export const initialState: AppState = {
   activePlayer: 0,
+  correctGuesses: 0,
   deckId: '',
   flippedCard: null,
   isGuessing: false,
@@ -45,6 +46,7 @@ export const reducer: Reducer<AppState, Actions> = (state, action) => {
     case ActionTypes.guessCorrect:
       return {
         ...state,
+        correctGuesses: state.correctGuesses + 1,
         flippedCard: null,
         isGuessing: false,
         pile: [action.payload, ...state.pile],
@@ -52,6 +54,7 @@ export const reducer: Reducer<AppState, Actions> = (state, action) => {
     case ActionTypes.guessIncorrect:
       return {
         ...state,
+        correctGuesses: 0,
         flippedCard: null,
         isGuessing: false,
         pile: [],

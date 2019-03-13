@@ -9,6 +9,8 @@ const Card: React.SFC<CardProps> = (props) => {
   return (
     <div
       style={{
+        backgroundImage: props.isDeck ? "url('cardback.png')" : undefined,
+        backgroundSize: props.isDeck ? '100% auto' : undefined,
         height: 140,
         width: 100,
       }}
@@ -17,17 +19,6 @@ const Card: React.SFC<CardProps> = (props) => {
         props.image && (
           <img
             src={props.image}
-            style={{
-              height: 'auto',
-              width: '100%'
-            }}
-          />
-        )
-      }
-      {
-        !props.image && props.isDeck && (
-          <img
-            src={'cardback.png'}
             style={{
               height: 'auto',
               width: '100%'

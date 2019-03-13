@@ -16,45 +16,17 @@ const PlayerStatus: React.SFC<Props> = (props) => {
   return (
     <div
       style={{
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'column',
+        fontWeight: props.isActive ? 'bold' : 'normal',
       }}
     >
-      <div>
-        {
-          isEditing ? (
-            <input
-              autoFocus
-              id={props.id}
-              onBlur={toggleEditing}
-              onChange={props.onChange}
-              value={props.name}
-            />
-          ) : (
-            <>
-              {
-                React.createElement(
-                  props.isActive ? 'b' : 'span',
-                  {},
-                  props.name,
-                )
-              }
-              <button
-                onClick={toggleEditing}
-                role="button"
-                style={{
-                  marginLeft: 8,
-                }}
-              >
-                edit
-              </button>
-            </>
-          )
-        }
-      </div>
+      <span
+        contentEditable
+        onChange={props.onChange}
+      >
+        {props.name}
+      </span>
       <span>
-        Score: {props.pile.length}
+        : {props.pile.length}
       </span>
     </div>
   );

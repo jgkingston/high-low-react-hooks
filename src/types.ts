@@ -34,6 +34,7 @@ export interface Player {
 
 export interface AppState {
   activePlayer: number;
+  correctGuesses: number;
   deckId: string;
   flippedCard: DeckCard | null;
   isGuessing: boolean;

@@ -14,14 +14,11 @@ const App = () => {
   useEffect(() => {
     shuffleSound.play()
     window.setTimeout(() => {
-      flipCardSound.play()
-    }, 500)
-    window.setTimeout(() => {
       drawCard('new')
         .then((result) => {
           dispatch(Actions.deckSet(result));
         })
-    }, 1100)
+    }, 500)
   }, []);
 
   async function reset() {
@@ -56,11 +53,8 @@ const App = () => {
         dispatch(Actions.guessCorrect(flippedCard));
       } else {
         dispatch(Actions.guessIncorrect(flippedCard))
-        window.setTimeout(async () => {
-          flipCardSound.play()
-          const nextResult = await drawCard(state.deckId)
-          dispatch(Actions.cardReplace(nextResult));
-        }, 500)
+        const nextResult = await drawCard(state.deckId)
+        dispatch(Actions.cardReplace(nextResult));
       }
     }, 600)
   }
@@ -83,20 +77,24 @@ const App = () => {
   const flippedCard = state.flippedCard || {}
 
   return (
-    <>
+    <div
+      style={{
+        padding: 16,
+      }}
+    >
       <header
         style={{
           alignItems: 'center',
           display: 'flex',
           flexDirection: 'column',
+          marginBottom: 16,
         }}
       >
-        <h1>React Hi-Lo</h1>
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-around',
-            maxWidth: 300,
+            maxWidth: 216,
             width: '100%',
           }}
         >
@@ -117,10 +115,9 @@ const App = () => {
           alignItems: 'center',
           display: 'flex',
           flexDirection: 'column',
-          padding: 16,
         }}
       >
-        <span style={{ marginBottom: 16 }}>Cards remaining: {state.remaining}</span>
+        
         <div
           style={{
             display: 'flex',
@@ -129,13 +126,44 @@ const App = () => {
             width: 216
           }}
         >
-          <Card
-            {...flippedCard}
-            isDeck={state.remaining > 0}
-          />
-          <Card {...pileTopCard} />
+          <div
+            style={{
+              alignItems: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <Card
+              {...flippedCard}
+              isDeck={state.remaining > 0}
+            />
+            <span
+              style={{
+                fontSize: '.6rem',
+                paddingTop: 8,
+              }}
+            >
+              Cards remaining: {state.remaining}
+            </span>
+          </div>
+          <div
+            style={{
+              alignItems: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '.6rem',
+                paddingBottom: 8,
+              }}
+            >
+              Cards in pile: {state.pile.length}
+            </span>
+            <Card {...pileTopCard} />
+          </div>
         </div>
-        <div style={{ marginBottom: 16 }} >Cards in pile: {state.pile.length}</div>
         <div>
           {
             GUESS_TYPES.map(guessType => (
@@ -149,11 +177,11 @@ const App = () => {
             ))
           }
           <button
-            disabled={state.pile.length < 3 || !!state.flippedCard}
+            disabled={state.correctGuesses < 3 || !!state.flippedCard}
             onClick={pass}
             role="button"
           >
-            Pass
+            {`Pass${state.correctGuesses < 3 ? ` (${3 - state.correctGuesses})` : ''}`}
           </button>
           <button
             onClick={reset}
@@ -163,7 +191,7 @@ const App = () => {
           </button>
         </div>
       </main>
-    </>
+    </div>
   );
 }
 
