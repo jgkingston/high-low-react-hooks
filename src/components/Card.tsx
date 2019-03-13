@@ -1,5 +1,5 @@
 import React from 'react'
-import { DeckCard } from './types';
+import { DeckCard } from '../types';
 
 interface CardProps extends Partial<DeckCard> {
   isDeck?: boolean;

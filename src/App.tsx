@@ -1,12 +1,12 @@
 import React, { useEffect, useReducer } from 'react';
-import './App.css';
+import './App.scss';
 import { drawCard, shuffle } from './api';
 import { DeckCard } from './types';
 import { Actions } from './actions';
-import Card from './Card';
+import Card from './components/Card';
 import { reducer, initialState } from './reducer';
 import { GUESS_TYPES, GUESS_TYPE_HIGHER, shuffleSound, flipCardSound } from './constants';
-import PlayerStatus from './PlayerStatus';
+import PlayerStatus from './components/PlayerStatus';
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -69,10 +69,20 @@ const App = () => {
     dispatch(Actions.playerRename(name, id));
   }
 
+  function getGameOverMessage() {
+    const { players } = state;
+    const [player1Score, player2Score] = players.map(player => player.pile.length)
+    if (player1Score === player2Score) {
+      return "It's a tie!";
+    }
+    return `${player1Score < player2Score ? players[0].name : players[1].name } wins!`
+  }
+
+  const gameOver = state.remaining === 0 ||
+    (state.remaining + state.pile.length) < Math.abs(state.players[0].pile.length - state.players[1].pile.length)
   const guessDisabled = state.pile.length === 0 ||
     state.isGuessing ||
-    state.remaining === 0;
-
+    gameOver;
   const pileTopCard = state.pile[0] || {}
   const flippedCard = state.flippedCard || {}
 
@@ -82,6 +92,14 @@ const App = () => {
         padding: 16,
       }}
     >
+      {
+        gameOver && (
+          <div className="pyro">
+            <div className="before"></div>
+            <div className="after"></div>
+          </div>
+        )
+      }
       <header
         style={{
           alignItems: 'center',
@@ -90,6 +108,11 @@ const App = () => {
           marginBottom: 16,
         }}
       >
+        {
+          gameOver && (
+            <h2>{getGameOverMessage()}</h2>
+          )
+        }
         <div
           style={{
             display: 'flex',

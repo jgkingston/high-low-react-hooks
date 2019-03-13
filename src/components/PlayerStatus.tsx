@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Player } from './types';
+import { Player } from '../types';
 
 interface Props extends Player {
   isActive: boolean;
@@ -14,17 +14,18 @@ const PlayerStatus: React.SFC<Props> = (props) => {
   }
 
   return (
-    <div
-      style={{
-        fontWeight: props.isActive ? 'bold' : 'normal',
-      }}
-    >
-      <span
-        contentEditable
+    <div>
+      <input
+        autoFocus
+        id={props.id}
+        onBlur={toggleEditing}
         onChange={props.onChange}
+        style={{
+          width: 60,
+        }}
+        value={props.name}
       >
-        {props.name}
-      </span>
+      </input>
       <span>
         : {props.pile.length}
       </span>
