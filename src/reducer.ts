@@ -77,6 +77,7 @@ export const reducer: Reducer<AppState, Actions> = (state, action) => {
       return {
         ...state,
         activePlayer: state.activePlayer === 1 ? 0 : 1,
+        correctGuesses: 0,
       }
     case ActionTypes.playerRename:
       return {

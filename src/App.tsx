@@ -1,12 +1,16 @@
 import React, { useEffect, useReducer } from 'react';
+
+import Button from '@material-ui/core/Button';
+
 import './App.scss';
 import { drawCard, shuffle } from './api';
 import { DeckCard } from './types';
 import { Actions } from './actions';
-import Card from './components/Card';
 import { reducer, initialState } from './reducer';
 import { GUESS_TYPES, GUESS_TYPE_HIGHER, shuffleSound, flipCardSound } from './constants';
 import PlayerStatus from './components/PlayerStatus';
+import { Grid, Stepper, Step, StepLabel } from '@material-ui/core';
+import CardPile from './components/CardPile';
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -37,14 +41,13 @@ const App = () => {
       : flippedCard.value < state.pile[0].value
   }
 
-  async function guess(event: React.MouseEvent<HTMLInputElement>) {
+  async function guess(guessType: string) {
     dispatch(Actions.guessPending());
     
-    const guess = event.currentTarget.value;
     flipCardSound.play()
     const result = await drawCard(state.deckId)
     const flippedCard = result.cards[0];
-    const correct = isCorrect(guess, flippedCard);
+    const correct = isCorrect(guessType, flippedCard);
 
     dispatch(Actions.cardFlip(result));
 
@@ -100,11 +103,12 @@ const App = () => {
           </div>
         )
       }
-      <header
+      <Grid
+        component="header"
+        container
+        direction="column"
+        alignItems="center"
         style={{
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'column',
           marginBottom: 16,
         }}
       >
@@ -113,107 +117,101 @@ const App = () => {
             <h2>{getGameOverMessage()}</h2>
           )
         }
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-around',
-            maxWidth: 216,
-            width: '100%',
-          }}
+        <Grid
+          container
+          justify="space-around"
         >
-          {
-            state.players.map((player, index) => (
-              <PlayerStatus
-                key={player.id}
-                {...player}
-                isActive={state.activePlayer === index}
-                onChange={handleNameChange}
-              />
-            ))
-          }
-        </div>
-      </header>
-      <main
-        style={{
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
+          <Stepper activeStep={state.activePlayer}>
+            {
+              state.players.map((player, index) => (
+                <Step
+                  key={player.id}
+                  completed={false}
+                >
+                  <StepLabel>
+                    <PlayerStatus
+                      {...player}
+                      isActive={state.activePlayer === index}
+                      onChange={handleNameChange}
+                    />
+                  </StepLabel>
+                </Step>
+              ))
+            }
+          </Stepper>
+        </Grid>
+      </Grid>
+      <Grid
+        component="main"
+        container
+        alignItems="center"
+        direction="column"
       >
-        
-        <div
+        <Grid
+          container
+          justify="center"
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
             marginBottom: 16,
-            width: 216
           }}
+          wrap="nowrap"
         >
-          <div
-            style={{
-              alignItems: 'center',
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <Card
+          <div style={{ margin: 8 }}>
+            <CardPile
               {...flippedCard}
-              isDeck={state.remaining > 0}
+              cardsInPile={state.remaining}
+              showCardBack={state.remaining > 0}
             />
-            <span
-              style={{
-                fontSize: '.6rem',
-                paddingTop: 8,
-              }}
-            >
-              Cards remaining: {state.remaining}
-            </span>
           </div>
-          <div
-            style={{
-              alignItems: 'center',
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '.6rem',
-                paddingBottom: 8,
-              }}
-            >
-              Cards in pile: {state.pile.length}
-            </span>
-            <Card {...pileTopCard} />
+          <div style={{ margin: 8 }}>
+            <CardPile
+              {...pileTopCard}
+              cardsInPile={state.pile.length}
+            />
           </div>
-        </div>
-        <div>
-          {
-            GUESS_TYPES.map(guessType => (
-              <input
-                disabled={guessDisabled}
-                key={guessType}
-                onClick={guess}
-                type="button"
-                value={guessType}
-              />
-            ))
-          }
-          <button
-            disabled={state.correctGuesses < 3 || !!state.flippedCard}
-            onClick={pass}
-            role="button"
+        </Grid>
+        <div className="button-group">
+          <Grid
+            container
+            justify="center"
           >
-            {`Pass${state.correctGuesses < 3 ? ` (${3 - state.correctGuesses})` : ''}`}
-          </button>
-          <button
-            onClick={reset}
-            role="button"
+            {
+              GUESS_TYPES.map(guessType => (
+                <Button
+                  color="primary"
+                  disabled={guessDisabled}
+                  key={guessType}
+                  onClick={() => guess(guessType)}
+                  role="button"
+                  variant="outlined"
+                >
+                  {guessType}
+                </Button>
+              ))
+            }
+            <Button
+              color="primary"
+              disabled={state.correctGuesses < 3 || !!state.flippedCard}
+              onClick={pass}
+              role="button"
+              variant="contained"
+            >
+              {`Pass${state.correctGuesses < 3 ? ` (${3 - state.correctGuesses})` : ''}`}
+            </Button>
+          </Grid>
+          <Grid
+            container
+            justify="center"
           >
-            Reset
-          </button>
+            <Button
+              onClick={reset}
+              role="button"
+              variant="text"
+            >
+              Reset
+            </Button>
+          </Grid>
         </div>
-      </main>
+      </Grid>
     </div>
   );
 }

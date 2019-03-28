@@ -1,34 +1,23 @@
 import React, { useState } from 'react'
 import { Player } from '../types';
 
+import InputAdornment from '@material-ui/core/InputAdornment';
+import InputBase from '@material-ui/core/InputBase';
+
 interface Props extends Player {
   isActive: boolean;
   onChange(event: React.ChangeEvent<HTMLInputElement>): void;
 }
 
 const PlayerStatus: React.SFC<Props> = (props) => {
-  const [isEditing, setIsEditing] = useState (false);
-
-  function toggleEditing() {
-    setIsEditing(!isEditing);
-  }
-
   return (
     <div>
-      <input
-        autoFocus
+      <InputBase
         id={props.id}
-        onBlur={toggleEditing}
+        endAdornment={<InputAdornment position="end">{`${props.pile.length}`}</InputAdornment>}
         onChange={props.onChange}
-        style={{
-          width: 60,
-        }}
         value={props.name}
-      >
-      </input>
-      <span>
-        : {props.pile.length}
-      </span>
+      />
     </div>
   );
 }
