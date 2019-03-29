@@ -28,6 +28,7 @@ export enum ActionTypes {
   guessPending = 'GUESS_PENDING',
   playerPass = 'PLAYER_PASS',
   playerRename = 'PLAYER_RENAME',
+  modalRulesToggle = 'MODAL_RULES_TOGGLE',
 }
 
 export const Actions = {
@@ -39,6 +40,7 @@ export const Actions = {
   guessPending: () => createAction(ActionTypes.guessPending),
   playerPass: () => createAction(ActionTypes.playerPass),
   playerRename: (name: string, id: string) => createAction(ActionTypes.playerRename, { name, id }),
+  modalRulesToggle: () => createAction(ActionTypes.modalRulesToggle),
 };
 
 export type Actions = ActionsUnion<typeof Actions>;

@@ -9,7 +9,7 @@ import { Actions } from './actions';
 import { reducer, initialState } from './reducer';
 import { GUESS_TYPES, GUESS_TYPE_HIGHER, shuffleSound, flipCardSound } from './constants';
 import PlayerStatus from './components/PlayerStatus';
-import { Grid, Stepper, Step, StepLabel } from '@material-ui/core';
+import { Grid, Stepper, Step, StepLabel, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@material-ui/core';
 import CardPile from './components/CardPile';
 
 const App = () => {
@@ -81,6 +81,10 @@ const App = () => {
     return `${player1Score < player2Score ? players[0].name : players[1].name } wins!`
   }
 
+  function toggleModal() {
+    dispatch(Actions.modalRulesToggle());
+  }
+
   const gameOver = state.remaining === 0 ||
     (state.remaining + state.pile.length) < Math.abs(state.players[0].pile.length - state.players[1].pile.length)
   const guessDisabled = state.pile.length === 0 ||
@@ -119,26 +123,17 @@ const App = () => {
         }
         <Grid
           container
-          justify="space-around"
+          justify="center"
         >
-          <Stepper activeStep={state.activePlayer}>
-            {
-              state.players.map((player, index) => (
-                <Step
-                  key={player.id}
-                  completed={false}
-                >
-                  <StepLabel>
-                    <PlayerStatus
-                      {...player}
-                      isActive={state.activePlayer === index}
-                      onChange={handleNameChange}
-                    />
-                  </StepLabel>
-                </Step>
-              ))
-            }
-          </Stepper>
+          {
+            state.players.map((player, index) => (
+              <PlayerStatus
+                {...player}
+                isActive={state.activePlayer === index}
+                onChange={handleNameChange}
+              />
+            ))
+          }
         </Grid>
       </Grid>
       <Grid
@@ -207,11 +202,41 @@ const App = () => {
               role="button"
               variant="text"
             >
-              Reset
+              Reset Game
+            </Button>
+            <Button
+              onClick={toggleModal}
+              role="buton"
+              variant="text"
+            >
+              Review Ruleset
             </Button>
           </Grid>
         </div>
       </Grid>
+      <Dialog
+        aria-labelledby="rules-dialog-title"
+        open={state.showRulesModal}
+        onClose={toggleModal}
+      >
+        <DialogTitle id="rules-dialog-title">
+          High Low: The Rules
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This is a two-player, hot-seat card game where players take turns guessing whether the next flipped card will be higher or lower than the last. If the guessing player is incorrect they take the newly flipped card and all the cards that have accumulated in the discard pile. Each card is a point and the object is to end the game with the fewest points. If a player is able to make three correct guesses in a row they have the option to pass play to their opponent. Instead of passing a player may choose to continue guessing so as not to provide their opponent with a easy guess. However the active player only retains the ability to pass as long as they keep guessing correctly. If they guess incorrectly at any point the correct guess counter resets to zero.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            autoFocus
+            color="primary"
+            onClick={toggleModal}
+          >
+            Got it
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

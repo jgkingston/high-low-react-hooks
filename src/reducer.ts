@@ -11,15 +11,16 @@ export const initialState: AppState = {
   pile: [],
   players: [{
     id: '1',
-    name: 'player one',
+    name: 'Player One',
     pile: [],
   },
   {
     id: '2',
-    name: 'player two',
+    name: 'Player Two',
     pile: [],
   }],
   remaining: 52,
+  showRulesModal: false,
 };
 
 export const reducer: Reducer<AppState, Actions> = (state, action) => {
@@ -91,6 +92,11 @@ export const reducer: Reducer<AppState, Actions> = (state, action) => {
           }
           return player;
         })
+      }
+    case ActionTypes.modalRulesToggle:
+      return {
+        ...state,
+        showRulesModal: !state.showRulesModal, 
       }
     default:
       return state;

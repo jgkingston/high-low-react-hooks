@@ -41,4 +41,5 @@ export interface AppState {
   pile: DeckCard[];
   players: Player[];
   remaining: number;
+  showRulesModal: boolean;
 }

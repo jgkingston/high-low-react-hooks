@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Player } from '../types';
 
 import InputAdornment from '@material-ui/core/InputAdornment';
-import InputBase from '@material-ui/core/InputBase';
+import TextField from '@material-ui/core/TextField';
 
 interface Props extends Player {
   isActive: boolean;
@@ -11,14 +11,19 @@ interface Props extends Player {
 
 const PlayerStatus: React.SFC<Props> = (props) => {
   return (
-    <div>
-      <InputBase
-        id={props.id}
-        endAdornment={<InputAdornment position="end">{`${props.pile.length}`}</InputAdornment>}
-        onChange={props.onChange}
-        value={props.name}
-      />
-    </div>
+    <TextField
+      id={props.id}
+      InputProps={{
+        endAdornment: <InputAdornment position="end">{`${props.pile.length}`}</InputAdornment>,
+      }}
+      label={props.isActive ? 'Active': ' '}
+      onChange={props.onChange}
+      style={{
+        marginLeft: 32,
+        marginRight: 32,
+      }}
+      value={props.name}
+    />
   );
 }
 
