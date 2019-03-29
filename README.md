@@ -10,6 +10,8 @@ This is a two-player, hot-seat card game where players take turns guessing wheth
 
 This was built using React, with a emphasis on the new hooks api, and leverages the API provided by http://deckofcardsapi.com/.
 
+A playable demo can be found here: [https://jgkingston.github.io/high-low-react-hooks/](https://jgkingston.github.io/high-low-react-hooks/)
+
 ## Instructions for Local development
 
 ```sh
